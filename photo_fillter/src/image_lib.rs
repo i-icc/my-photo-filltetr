@@ -1,4 +1,4 @@
-use image::{GenericImageView, ImageBuffer, RgbaImage};
+use image::{GenericImageView, ImageBuffer, Rgba, RgbaImage};
 
 pub fn bytes_to_rgba_image(bytes: &[u8], width: u32, height: u32) -> RgbaImage {
     ImageBuffer::from_raw(width, height, bytes.to_vec())
@@ -78,4 +78,53 @@ pub fn merge_images(images: [RgbaImage; 4], width: u32, height: u32) -> RgbaImag
     }
 
     merged_image
+}
+
+pub fn is_complex(image: &RgbaImage, threshold: f32) -> bool {
+    let (width, height) = image.dimensions();
+    let mut brightness_values = Vec::with_capacity((width * height) as usize);
+
+    // ピクセルの明度を計算
+    for pixel in image.pixels() {
+        let Rgba([r, g, b, _a]) = *pixel; // アルファ値は無視
+                                          // 明度を計算 (相対明度の計算方法)
+        let brightness = 0.2126 * r as f32 + 0.7152 * g as f32 + 0.0722 * b as f32;
+        brightness_values.push(brightness);
+    }
+
+    // 明度の最大値と最小値を計算
+    let max_brightness = brightness_values.iter().cloned().fold(0. / 0., f32::max); // -inf からの最大値
+    let min_brightness = brightness_values
+        .iter()
+        .cloned()
+        .fold(f32::INFINITY, f32::min); // +inf からの最小値
+
+    // コントラストを評価 (明度の差がしきい値を超えた場合に高コントラストと判断)
+    (max_brightness - min_brightness) > threshold
+}
+
+pub fn average_color_image(image: &RgbaImage) -> RgbaImage {
+    let (width, height) = image.dimensions();
+    let mut r_sum = 0u32;
+    let mut g_sum = 0u32;
+    let mut b_sum = 0u32;
+    let mut count = 0u32;
+
+    // 画像のすべてのピクセルの平均色を計算
+    for pixel in image.pixels() {
+        let Rgba([r, g, b, _a]) = *pixel;
+        r_sum += r as u32;
+        g_sum += g as u32;
+        b_sum += b as u32;
+        count += 1;
+    }
+
+    // 平均色を計算
+    let r_avg = (r_sum / count) as u8;
+    let g_avg = (g_sum / count) as u8;
+    let b_avg = (b_sum / count) as u8;
+
+    // 平均色で塗りつぶされた画像を作成
+    let average_color = Rgba([r_avg, g_avg, b_avg, 255]);
+    ImageBuffer::from_fn(width, height, |_, _| average_color)
 }

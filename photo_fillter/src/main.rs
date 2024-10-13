@@ -1,7 +1,7 @@
 mod image_lib;
 
 use image::{ImageBuffer, Rgba, RgbaImage};
-use image_lib::{grayscale_fillter, merge_images, split_image};
+use image_lib::{average_color_image, grayscale_fillter, merge_images, split_image};
 use std::fs::File;
 use std::io::BufReader;
 
@@ -67,7 +67,7 @@ fn merge_test(
     let mix_imgs = [
         imgs[1].clone(),
         imgs[2].clone(),
-        imgs[3].clone(),
+        average_color_image(&imgs[3]),
         imgs[0].clone(),
     ];
     let merged_image = merge_images(mix_imgs, width, height);
