@@ -57,14 +57,16 @@ export function grayscale(img_data, width, height) {
  * @param {Uint8Array} img_data
  * @param {number} width
  * @param {number} height
+ * @param {number} complex
+ * @param {number} max_depth
  * @returns {Uint8Array}
  */
-export function original_pixcel(img_data, width, height) {
+export function original_pixcel(img_data, width, height, complex, max_depth) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passArray8ToWasm0(img_data, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.original_pixcel(retptr, ptr0, len0, width, height);
+        wasm.original_pixcel(retptr, ptr0, len0, width, height, complex, max_depth);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         var v2 = getArrayU8FromWasm0(r0, r1).slice();

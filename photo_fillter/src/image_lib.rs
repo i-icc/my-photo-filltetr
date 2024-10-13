@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 use image::{GenericImageView, ImageBuffer, Rgba, RgbaImage};
 
 pub fn bytes_to_rgba_image(bytes: &[u8], width: u32, height: u32) -> RgbaImage {
@@ -33,12 +35,13 @@ pub fn original_pixcel_fillter(
     max_depth: u32,
 ) -> RgbaImage {
     depth = depth + 1;
+    let (width, height) = img.dimensions();
     let is_comlex_image = is_complex(&img, complex_coefficient);
-    if !is_comlex_image || depth >= max_depth {
+    let is_minimum = min(width, height) < 2;
+    if !is_comlex_image || depth >= max_depth || is_minimum {
         return average_color_image(&img);
     }
 
-    let (width, height) = img.dimensions();
     let images_list = split_image(img, width, height);
     let mut fillterd_image_list: [RgbaImage; 4] = Default::default();
     for (i, splited_img) in images_list.iter().enumerate() {
@@ -51,30 +54,48 @@ pub fn original_pixcel_fillter(
 }
 
 fn split_image(img: RgbaImage, width: u32, height: u32) -> [RgbaImage; 4] {
-    // 各部分の幅と高さを計算（4分割）
-    let half_width = width / 2;
-    let half_height = height / 2;
+    let half_width = (width + 1) / 2; // 奇数の場合の対策
+    let half_height = (height + 1) / 2; // 奇数の場合の対策
 
     // 左上
-    let top_left = img.view(0, 0, half_width, half_height).to_image();
+    let top_left = img
+        .view(0, 0, half_width.min(width), half_height.min(height))
+        .to_image();
     // 右上
-    let top_right = img.view(half_width, 0, half_width, half_height).to_image();
+    let top_right = img
+        .view(
+            half_width.min(width),
+            0,
+            (width - half_width).min(half_width),
+            half_height.min(height),
+        )
+        .to_image();
     // 左下
-    let bottom_left = img.view(0, half_height, half_width, half_height).to_image();
+    let bottom_left = img
+        .view(
+            0,
+            half_height.min(height),
+            half_width.min(width),
+            (height - half_height).min(half_height),
+        )
+        .to_image();
     // 右下
     let bottom_right = img
-        .view(half_width, half_height, half_width, half_height)
+        .view(
+            half_width.min(width),
+            half_height.min(height),
+            (width - half_width).min(half_width),
+            (height - half_height).min(half_height),
+        )
         .to_image();
 
     [top_left, top_right, bottom_left, bottom_right]
 }
 
 fn merge_images(images: [RgbaImage; 4], width: u32, height: u32) -> RgbaImage {
-    // 4分割した画像の幅と高さを計算
-    let half_width = width / 2;
-    let half_height = height / 2;
+    let half_width = (width + 1) / 2; // 奇数の場合の対策
+    let half_height = (height + 1) / 2; // 奇数の場合の対策
 
-    // 新しい空の画像を作成（元のサイズ width x height）
     let mut merged_image = ImageBuffer::new(width, height);
 
     // 左上の画像をコピー
@@ -84,17 +105,23 @@ fn merge_images(images: [RgbaImage; 4], width: u32, height: u32) -> RgbaImage {
 
     // 右上の画像をコピー
     for (x, y, pixel) in images[1].enumerate_pixels() {
-        merged_image.put_pixel(x + half_width, y, *pixel);
+        if x + half_width < width {
+            merged_image.put_pixel(x + half_width, y, *pixel);
+        }
     }
 
     // 左下の画像をコピー
     for (x, y, pixel) in images[2].enumerate_pixels() {
-        merged_image.put_pixel(x, y + half_height, *pixel);
+        if y + half_height < height {
+            merged_image.put_pixel(x, y + half_height, *pixel);
+        }
     }
 
     // 右下の画像をコピー
     for (x, y, pixel) in images[3].enumerate_pixels() {
-        merged_image.put_pixel(x + half_width, y + half_height, *pixel);
+        if x + half_width < width && y + half_height < height {
+            merged_image.put_pixel(x + half_width, y + half_height, *pixel);
+        }
     }
 
     merged_image

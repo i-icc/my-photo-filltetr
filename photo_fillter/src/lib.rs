@@ -9,8 +9,14 @@ pub fn grayscale(img_data: &[u8], width: u32, height: u32) -> Vec<u8> {
 }
 
 #[wasm_bindgen]
-pub fn original_pixcel(img_data: &[u8], width: u32, height: u32) -> Vec<u8> {
+pub fn original_pixcel(
+    img_data: &[u8],
+    width: u32,
+    height: u32,
+    complex: f32,
+    max_depth: u32,
+) -> Vec<u8> {
     let img = bytes_to_rgba_image(img_data, width, height);
-    let fillterd_img = original_pixcel_fillter(img, 50.0, 0, 10);
+    let fillterd_img = original_pixcel_fillter(img, complex, 0, max_depth);
     return fillterd_img.as_raw().to_vec();
 }

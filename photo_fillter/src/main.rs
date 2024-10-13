@@ -7,11 +7,11 @@ use std::io::BufReader;
 
 fn main() {
     // Define input and output paths
-    const FILE_PATH: &str = "./test-images/test.png";
+    const FILE_PATH: &str = "./test-images/logo.png";
     const GRAY_TEST_PATH: &str = "./test-images/grayscale_test.png";
     const PIXEL_TEST_PATH: &str = "./test-images/pixel_test.png";
 
-    const COMPLEX_COEFFICIENT: f32 = 200.0;
+    const COMPLEX_COEFFICIENT: f32 = 124.0;
     const MAX_DEPTH: u32 = 10;
 
     let file = File::open(FILE_PATH).expect("Failed to open input image file");
