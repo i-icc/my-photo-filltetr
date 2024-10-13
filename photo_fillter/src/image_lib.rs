@@ -26,8 +26,28 @@ pub fn grayscale_fillter(img_data: &[u8], width: u32, height: u32) -> Vec<u8> {
     rgba_data
 }
 
-pub fn original_pixcel_fillter(img: RgbaImage) -> RgbaImage {
-    img
+pub fn original_pixcel_fillter(
+    img: RgbaImage,
+    complex_coefficient: f32,
+    mut depth: u32,
+    max_depth: u32,
+) -> RgbaImage {
+    depth = depth + 1;
+    let is_comlex_image = is_complex(&img, complex_coefficient);
+    if !is_comlex_image || depth >= max_depth {
+        return average_color_image(&img);
+    }
+
+    let (width, height) = img.dimensions();
+    let images_list = split_image(img, width, height);
+    let mut fillterd_image_list: [RgbaImage; 4] = Default::default();
+    for (i, splited_img) in images_list.iter().enumerate() {
+        fillterd_image_list[i] =
+            original_pixcel_fillter(splited_img.clone(), complex_coefficient, depth, max_depth);
+    }
+    let merged_img = merge_images(fillterd_image_list, width, height);
+
+    return merged_img;
 }
 
 fn split_image(img: RgbaImage, width: u32, height: u32) -> [RgbaImage; 4] {
