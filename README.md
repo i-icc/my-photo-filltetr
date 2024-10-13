@@ -13,12 +13,12 @@ rustup target add wasm32-unknown-unknown
 
 ### build
 ```sh
-cd photo-fillter
+cd photo_fillter
 wasm-pack build --target web
 ```
 
 ### rust run
 ```sh
-cd photo-fillter
+cd photo_fillter
 cargo run
 ```
