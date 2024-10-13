@@ -26,11 +26,11 @@ pub fn grayscale_fillter(img_data: &[u8], width: u32, height: u32) -> Vec<u8> {
     rgba_data
 }
 
-pub fn split_image(img_data: &[u8], width: u32, height: u32) -> [RgbaImage; 4] {
-    // 画像全体のRGBAピクセルのバッファを読み込み
-    let img =
-        ImageBuffer::from_raw(width, height, img_data.to_vec()).expect("Failed to create image");
+pub fn original_pixcel_fillter(img: RgbaImage) -> RgbaImage {
+    img
+}
 
+fn split_image(img: RgbaImage, width: u32, height: u32) -> [RgbaImage; 4] {
     // 各部分の幅と高さを計算（4分割）
     let half_width = width / 2;
     let half_height = height / 2;
@@ -49,7 +49,7 @@ pub fn split_image(img_data: &[u8], width: u32, height: u32) -> [RgbaImage; 4] {
     [top_left, top_right, bottom_left, bottom_right]
 }
 
-pub fn merge_images(images: [RgbaImage; 4], width: u32, height: u32) -> RgbaImage {
+fn merge_images(images: [RgbaImage; 4], width: u32, height: u32) -> RgbaImage {
     // 4分割した画像の幅と高さを計算
     let half_width = width / 2;
     let half_height = height / 2;
@@ -80,7 +80,7 @@ pub fn merge_images(images: [RgbaImage; 4], width: u32, height: u32) -> RgbaImag
     merged_image
 }
 
-pub fn is_complex(image: &RgbaImage, threshold: f32) -> bool {
+fn is_complex(image: &RgbaImage, threshold: f32) -> bool {
     let (width, height) = image.dimensions();
     let mut brightness_values = Vec::with_capacity((width * height) as usize);
 
@@ -103,7 +103,7 @@ pub fn is_complex(image: &RgbaImage, threshold: f32) -> bool {
     (max_brightness - min_brightness) > threshold
 }
 
-pub fn average_color_image(image: &RgbaImage) -> RgbaImage {
+fn average_color_image(image: &RgbaImage) -> RgbaImage {
     let (width, height) = image.dimensions();
     let mut r_sum = 0u32;
     let mut g_sum = 0u32;
