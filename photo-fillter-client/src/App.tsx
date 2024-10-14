@@ -13,12 +13,16 @@ const App: React.FC = () => {
 
   return (
     <div className="p-8">
-      <ImageForm onImageSet={function (image: File): void { }} />
-      <ButtonGroup
-        buttons={fillters}
-        selected={selectedButton}
-        onSelect={handleSelect}
-      />
+      <div className='w-9/10 max-h-[500px]'>
+        <ImageForm onImageSet={function (image: File): void { }} />
+      </div>
+      <div>
+        <ButtonGroup
+          buttons={fillters}
+          selected={selectedButton}
+          onSelect={handleSelect}
+        />
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ interface FileDropProps {
 
 const FileDrop: React.FC<FileDropProps> = ({ onImageSet }) => {
     const [isDragActive, setIsDragActive] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleDragOver = (event: React.DragEvent) => {
@@ -21,7 +22,9 @@ const FileDrop: React.FC<FileDropProps> = ({ onImageSet }) => {
         event.preventDefault();
         setIsDragActive(false);
         if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-            onImageSet(event.dataTransfer.files[0]);
+            const file = event.dataTransfer.files[0];
+            setSelectedImage(file);
+            onImageSet(file);
         }
     };
 
@@ -31,7 +34,7 @@ const FileDrop: React.FC<FileDropProps> = ({ onImageSet }) => {
 
     return (
         <div
-            className={`border-2 border-dashed rounded-md p-12 text-center cursor-pointer ${isDragActive ? 'border-blue-500' : 'border-gray-300'
+            className={`w-9/10 max-h-[500px] border-2 border-dashed rounded-md p-6 text-center cursor-pointer overflow-hidden ${isDragActive ? 'border-blue-500' : 'border-gray-300'
                 }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -41,14 +44,24 @@ const FileDrop: React.FC<FileDropProps> = ({ onImageSet }) => {
             <input
                 type="file"
                 ref={inputRef}
+                accept="image/*"
                 style={{ display: 'none' }}
                 onChange={(e) => {
                     if (e.target.files) {
-                        onImageSet(e.target.files[0]);
+                        const file = e.target.files[0];
+                        setSelectedImage(file);
+                        onImageSet(file);
                     }
                 }}
             />
             <p>ファイル添付 またはここにファイルをドロップ</p>
+            {selectedImage && (
+                <img
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Selected"
+                    className="object-contain h-full w-full pt-6"
+                />
+            )}
         </div>
     );
 };
