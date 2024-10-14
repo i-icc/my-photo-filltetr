@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ButtonGroup from './commponents/ButtonGroup';
+import ImageForm from './commponents/ImageForm';
 
 const App: React.FC = () => {
   const fillters = ['gray scale', 'odd pixel'];
@@ -12,6 +13,7 @@ const App: React.FC = () => {
 
   return (
     <div className="p-8">
+      <ImageForm onImageSet={function (image: File): void { }} />
       <ButtonGroup
         buttons={fillters}
         selected={selectedButton}
