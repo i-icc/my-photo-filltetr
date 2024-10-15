@@ -59,7 +59,7 @@ const FileDrop: React.FC<FileDropProps> = ({ onImageSet }) => {
                 <img
                     src={URL.createObjectURL(selectedImage)}
                     alt="Selected"
-                    className="object-contain h-full w-full pt-6"
+                    className="object-contain max-h-[450px] w-full pt-6"
                 />
             )}
         </div>

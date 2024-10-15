@@ -22,3 +22,8 @@ wasm-pack build --target web
 cd photo_fillter
 cargo run
 ```
+
+### mv package
+```sh
+cp -r photo_fillter/pkg photo-fillter-client/src/
+```
