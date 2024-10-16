@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import init, { grayscale } from '../pkg/photo_fillter';
+import React, { useEffect, useState } from 'react';
+import init, { original_pixcel } from '../pkg/photo_fillter';
 
 type OddPixelButtonProps = {
     imageFile: File | null;
@@ -7,6 +7,9 @@ type OddPixelButtonProps = {
 };
 
 const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessedImage }) => {
+    const [complex, setComplex] = useState(128);
+    const [depth, setDepth] = useState(8);
+
     useEffect(() => {
         // WASMモジュールの初期化
         init().then(() => {
@@ -41,7 +44,7 @@ const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessed
                 const data = imgData.data;
 
                 // 画像データをWASMのgrayscale関数で処理
-                const result = grayscale(new Uint8Array(data), width, height);
+                const result = original_pixcel(new Uint8Array(data), width, height, complex, depth);
                 // 結果をCanvasに描画
                 const resultImgData = new ImageData(
                     new Uint8ClampedArray(result),
@@ -67,7 +70,7 @@ const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessed
         <div className="flex flex-col items-center">
             <button
                 onClick={handleProcessImage}
-                className='px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600'
+                className={`px-4 py-2 text-white rounded-full ${imageFile ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"}`}
             >
                 変換
             </button>

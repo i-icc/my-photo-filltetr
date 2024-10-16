@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ButtonGroup from './commponents/ButtonGroup';
 import ImageForm from './commponents/ImageForm';
 import GrayScaleButton from './commponents/GrayScaleButton';
+import OddPixelButton from './commponents/OddPixelButton';
 
 const App: React.FC = () => {
   const grayscale_fillter = 'gray scale';
@@ -37,6 +38,11 @@ const App: React.FC = () => {
         {/* フィルター毎の設定&実行ボタン */}
         {selectedButton === grayscale_fillter
           && <GrayScaleButton
+            imageFile={selectedImage}
+            setProcessedImage={seFilterdImage} />}
+
+        {selectedButton === odd_pixel_fillter
+          && <OddPixelButton
             imageFile={selectedImage}
             setProcessedImage={seFilterdImage} />}
 
