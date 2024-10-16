@@ -1,6 +1,7 @@
 {
   "name": "photo-fillter-client",
   "version": "0.1.0",
+  "homepage": "https://i-icc.github.io/my-photo-filltetr/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
