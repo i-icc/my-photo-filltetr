@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import init, { grayscale } from '../pkg/photo_fillter';
 
-type GrayScaleButtonProps = {
+type OddPixelButtonProps = {
     imageFile: File | null;
     setProcessedImage: (img: File) => void;
 };
 
-const GrayScaleButton: React.FC<GrayScaleButtonProps> = ({ imageFile, setProcessedImage }) => {
+const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessedImage }) => {
     useEffect(() => {
         // WASMモジュールの初期化
         init().then(() => {
@@ -67,7 +67,7 @@ const GrayScaleButton: React.FC<GrayScaleButtonProps> = ({ imageFile, setProcess
         <div className="flex flex-col items-center">
             <button
                 onClick={handleProcessImage}
-                className={`px-4 py-2 text-white rounded-full ${imageFile ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"}`}
+                className='px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600'
             >
                 変換
             </button>
@@ -75,4 +75,4 @@ const GrayScaleButton: React.FC<GrayScaleButtonProps> = ({ imageFile, setProcess
     );
 };
 
-export default GrayScaleButton;
+export default OddPixelButton;
