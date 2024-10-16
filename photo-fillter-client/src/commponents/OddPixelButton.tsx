@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import init, { original_pixcel } from '../pkg/photo_fillter';
+import Slider from './Slider';
 
 type OddPixelButtonProps = {
     imageFile: File | null;
@@ -8,7 +9,7 @@ type OddPixelButtonProps = {
 
 const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessedImage }) => {
     const [complex, setComplex] = useState(128);
-    const [depth, setDepth] = useState(8);
+    const [depth, setDepth] = useState(6);
 
     useEffect(() => {
         // WASMモジュールの初期化
@@ -68,6 +69,12 @@ const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessed
 
     return (
         <div className="flex flex-col items-center">
+            <div className='pb-3 w-5/12'>
+                <Slider min={0} max={256} value={complex} onChange={setComplex} />
+            </div>
+            <div className='pb-3 w-5/12'>
+                <Slider min={1} max={12} value={depth} onChange={setDepth} />
+            </div>
             <button
                 onClick={handleProcessImage}
                 className={`px-4 py-2 text-white rounded-full ${imageFile ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"}`}
