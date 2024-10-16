@@ -37,6 +37,10 @@ jobs:
           destination: ./photo-fillter-client/build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          source: ./photo-fillter-client
+          destination: ./photo-fillter-client/build
+
 
   # Deployment job
   deploy:
