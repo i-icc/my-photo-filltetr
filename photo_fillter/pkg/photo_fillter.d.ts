@@ -16,6 +16,13 @@ export function grayscale(img_data: Uint8Array, width: number, height: number): 
  * @returns {Uint8Array}
  */
 export function original_pixcel(img_data: Uint8Array, width: number, height: number, complex: number, max_depth: number): Uint8Array;
+/**
+ * @param {Uint8Array} img_data
+ * @param {number} width
+ * @param {number} height
+ * @returns {Uint8Array}
+ */
+export function film_effect_1(img_data: Uint8Array, width: number, height: number): Uint8Array;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -23,9 +30,11 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly grayscale: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly original_pixcel: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
+  readonly film_effect_1: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_exn_store: (a: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;

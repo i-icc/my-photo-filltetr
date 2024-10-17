@@ -1,15 +1,16 @@
 mod image_lib;
 
 use image::{ImageBuffer, Rgba};
-use image_lib::{bytes_to_rgba_image, grayscale_fillter, original_pixcel_fillter};
+use image_lib::{bytes_to_rgba_image, film_effect, grayscale_fillter, original_pixcel_fillter};
 use std::fs::File;
 use std::io::BufReader;
 
 fn main() {
     // Define input and output paths
-    const FILE_PATH: &str = "./test-images/logo.png";
+    const FILE_PATH: &str = "./test-images/a_test.png";
     const GRAY_TEST_PATH: &str = "./test-images/grayscale_test.png";
     const PIXEL_TEST_PATH: &str = "./test-images/pixel_test.png";
+    const FILM_TEST_PATH: &str = "./test-images/film_test.png";
 
     const COMPLEX_COEFFICIENT: f32 = 124.0;
     const MAX_DEPTH: u32 = 10;
@@ -18,7 +19,7 @@ fn main() {
     let reader = BufReader::new(file);
 
     // Load and convert the image to RGBA8
-    let img = image::load(reader, image::ImageFormat::Png)
+    let img = image::load(reader, image::ImageFormat::Jpeg)
         .expect("Failed to load image")
         .to_rgba8();
 
@@ -41,6 +42,28 @@ fn main() {
     ) {
         eprintln!("Error processing image: {}", e);
     }
+
+    // Run the film test
+    if let Err(e) = film_effect_test(&img, width, height, FILM_TEST_PATH) {
+        eprintln!("Error processing image: {}", e);
+    }
+}
+
+fn film_effect_test(
+    img: &[u8],
+    width: u32,
+    height: u32,
+    output_path: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
+    // Reconstruct the image and save it
+    let img_data = bytes_to_rgba_image(img, width, height);
+
+    let output = film_effect(img_data);
+
+    output
+        .save(output_path)
+        .expect("Failed to save output image");
+    Ok(())
 }
 
 fn original_pixcel_test(

@@ -1,6 +1,7 @@
 use std::cmp::min;
 
 use image::{GenericImageView, ImageBuffer, Rgba, RgbaImage};
+use rand::Rng;
 
 pub fn bytes_to_rgba_image(bytes: &[u8], width: u32, height: u32) -> RgbaImage {
     ImageBuffer::from_raw(width, height, bytes.to_vec())
@@ -51,6 +52,87 @@ pub fn original_pixcel_fillter(
     let merged_img = merge_images(fillterd_image_list, width, height);
 
     return merged_img;
+}
+
+/// フィルム風エフェクトを画像に適用する関数
+pub fn film_effect(mut img: RgbaImage) -> RgbaImage {
+    // コントラストを下げる
+    for pixel in img.pixels_mut() {
+        let Rgba(data) = *pixel;
+        let contrasted = [
+            (data[0] as f32 * 0.9) as u8, // 赤
+            (data[1] as f32 * 0.9) as u8, // 緑
+            (data[2] as f32 * 0.9) as u8, // 青
+            data[3],                      // アルファ
+        ];
+        *pixel = Rgba(contrasted);
+    }
+
+    // 画像中央を若干明るくする（ビネット効果）
+    let (width, height) = img.dimensions();
+    let center_x = width / 2;
+    let center_y = height / 2;
+    let radius = width.min(height) / 2;
+
+    for y in 0..height {
+        for x in 0..width {
+            let dx = (x as i32 - center_x as i32).abs();
+            let dy = (y as i32 - center_y as i32).abs();
+            let distance = ((dx.pow(2) + dy.pow(2)) as f32).sqrt();
+            if distance < radius as f32 {
+                let factor = 1.0 - (distance / radius as f32);
+                let pixel = img.get_pixel_mut(x, y);
+                let Rgba(data) = *pixel;
+                let brightened = [
+                    (data[0] as f32 + 30.0 * factor).min(255.0) as u8,
+                    (data[1] as f32 + 30.0 * factor).min(255.0) as u8,
+                    (data[2] as f32 + 30.0 * factor).min(255.0) as u8,
+                    data[3],
+                ];
+                *pixel = Rgba(brightened);
+            }
+        }
+    }
+
+    // 色補正を若干暖色よりに（青の量を減らす）
+    for pixel in img.pixels_mut() {
+        let Rgba(data) = *pixel;
+        let warmed = [
+            data[0],                       // 赤はそのまま
+            data[1],                       // 緑もそのまま
+            (data[2] as f32 * 0.95) as u8, // 青の量を減らす
+            data[3],
+        ];
+        *pixel = Rgba(warmed);
+    }
+
+    // 色被り補正を若干緑よりに
+    for pixel in img.pixels_mut() {
+        let Rgba(data) = *pixel;
+        let green_tinted = [
+            data[0],
+            (data[1] as f32 * 1.03).min(255.0) as u8, // 緑を強める
+            data[2],
+            data[3],
+        ];
+        *pixel = Rgba(green_tinted);
+    }
+
+    // 画像の粒度を若干荒く（ノイズ追加）
+    let mut rng = rand::thread_rng();
+    for pixel in img.pixels_mut() {
+        let noise: i32 = rng.gen_range(-3..3); // -10から10のノイズを追加
+        let Rgba(data) = *pixel;
+        let noisy = [
+            (data[0] as i32 + noise).clamp(0, 255) as u8,
+            (data[1] as i32 + noise).clamp(0, 255) as u8,
+            (data[2] as i32 + noise).clamp(0, 255) as u8,
+            data[3],
+        ];
+        *pixel = Rgba(noisy);
+    }
+
+    img
 }
 
 fn split_image(img: RgbaImage, width: u32, height: u32) -> [RgbaImage; 4] {

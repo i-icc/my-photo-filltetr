@@ -3,11 +3,13 @@ import ButtonGroup from './commponents/ButtonGroup';
 import ImageForm from './commponents/ImageForm';
 import GrayScaleButton from './commponents/GrayScaleButton';
 import OddPixelButton from './commponents/OddPixelButton';
+import Film1Button from './commponents/Film1Button';
 
 const App: React.FC = () => {
+  const film_fillter = 'フィルムシミュレーター';
   const grayscale_fillter = 'gray scale';
   const odd_pixel_fillter = 'odd pixel';
-  const fillters = [grayscale_fillter, odd_pixel_fillter];
+  const fillters = [film_fillter, grayscale_fillter, odd_pixel_fillter];
 
   const [selectedButton, setSelectedButton] = useState(fillters[0]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -38,6 +40,11 @@ const App: React.FC = () => {
         {/* フィルター毎の設定&実行ボタン */}
         {selectedButton === grayscale_fillter
           && <GrayScaleButton
+            imageFile={selectedImage}
+            setProcessedImage={seFilterdImage} />}
+
+        {selectedButton === film_fillter
+          && <Film1Button
             imageFile={selectedImage}
             setProcessedImage={seFilterdImage} />}
 
