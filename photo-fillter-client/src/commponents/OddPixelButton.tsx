@@ -69,10 +69,10 @@ const OddPixelButton: React.FC<OddPixelButtonProps> = ({ imageFile, setProcessed
 
     return (
         <div className="flex flex-col items-center">
-            <div className='pb-3 w-5/12'>
+            <div className='pb-5 w-8/12'>
                 <Slider min={0} max={256} value={complex} onChange={setComplex} />
             </div>
-            <div className='pb-3 w-5/12'>
+            <div className='pb-5 w-8/12'>
                 <Slider min={1} max={12} value={depth} onChange={setDepth} />
             </div>
             <button
