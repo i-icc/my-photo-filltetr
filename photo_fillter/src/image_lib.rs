@@ -60,10 +60,10 @@ pub fn film_effect(mut img: RgbaImage) -> RgbaImage {
     for pixel in img.pixels_mut() {
         let Rgba(data) = *pixel;
         let contrasted = [
-            (data[0] as f32 * 0.9) as u8, // 赤
-            (data[1] as f32 * 0.9) as u8, // 緑
-            (data[2] as f32 * 0.9) as u8, // 青
-            data[3],                      // アルファ
+            (data[0] as f32 * 0.95) as u8, // 赤
+            (data[1] as f32 * 0.95) as u8, // 緑
+            (data[2] as f32 * 0.95) as u8, // 青
+            data[3],                       // アルファ
         ];
         *pixel = Rgba(contrasted);
     }
@@ -100,7 +100,7 @@ pub fn film_effect(mut img: RgbaImage) -> RgbaImage {
         let warmed = [
             data[0],                       // 赤はそのまま
             data[1],                       // 緑もそのまま
-            (data[2] as f32 * 0.95) as u8, // 青の量を減らす
+            (data[2] as f32 * 0.98) as u8, // 青の量を減らす
             data[3],
         ];
         *pixel = Rgba(warmed);
